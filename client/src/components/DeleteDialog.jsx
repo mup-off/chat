@@ -33,7 +33,7 @@ export default function DeleteDialog({ message, mine, onDelete, onClose }) {
         role="dialog"
         aria-label="Delete message"
         onMouseDown={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl"
+        className="w-full max-w-sm rounded-2xl bg-panel p-5 shadow-xl"
       >
         <h2 className="text-lg font-medium text-slate-800">Delete message?</h2>
         <p className="mt-1 text-sm text-slate-500">

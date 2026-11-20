@@ -62,7 +62,7 @@ function DocumentCard({ message, mine }) {
       </span>
     </>
   );
-  const box = `flex w-64 max-w-full items-center gap-3 rounded-md p-2.5 ${mine ? 'bg-[#c8f0c0]' : 'bg-slate-100'}`;
+  const box = `flex w-64 max-w-full items-center gap-3 rounded-md p-2.5 ${mine ? 'bg-bubble-out-2' : 'bg-slate-100'}`;
   return message.mediaKey && message.status === 'sent' ? (
     <a href={mediaUrl(message.mediaKey)} className={`${box} hover:brightness-95`} aria-label={`Download ${message.mediaName}`}>
       {content}
@@ -117,7 +117,7 @@ function QuoteBlock({ quote, mine, meId, otherName, onJump }) {
     <button
       type="button"
       onClick={onJump}
-      className={`mb-1 flex w-full min-w-40 items-stretch overflow-hidden rounded-md text-left ${mine ? 'bg-[#c8f0c0]' : 'bg-slate-100'}`}
+      className={`mb-1 flex w-full min-w-40 items-stretch overflow-hidden rounded-md text-left ${mine ? 'bg-bubble-out-2' : 'bg-slate-100'}`}
       aria-label={`Replying to ${who}`}
     >
       <span className={`w-1 shrink-0 ${quote.senderId === meId ? 'bg-emerald-500' : 'bg-violet-500'}`} />
@@ -171,7 +171,7 @@ function Bubble({ message, mine, meId, otherName, status, highlighted, onRetry, 
           setMenuOpen(true);
         }}
         className={`group relative max-w-[80%] rounded-lg shadow-sm transition-colors duration-700 md:max-w-[65%] ${
-          highlighted ? 'bg-amber-100' : mine ? 'bg-[#d9fdd3]' : 'bg-white'
+          highlighted ? 'bg-amber-100' : mine ? 'bg-bubble-out' : 'bg-panel'
         } ${padded ? 'px-2.5 pb-1.5 pt-1.5' : 'p-1'}`}
       >
         {actionable && (
@@ -180,7 +180,7 @@ function Bubble({ message, mine, meId, otherName, status, highlighted, onRetry, 
             aria-label="Message options"
             aria-haspopup="menu"
             className={`absolute right-1 top-1 z-10 rounded-full p-0.5 text-slate-500 opacity-0 hover:bg-black/5 focus:opacity-100 group-hover:opacity-100 ${
-              mine ? 'bg-[#d9fdd3]' : 'bg-white'
+              mine ? 'bg-bubble-out' : 'bg-panel'
             } ${menuOpen ? 'opacity-100' : ''}`}
           >
             <ChevronIcon />
@@ -252,7 +252,7 @@ function ReplyBar({ quote, meId, otherName, onCancel }) {
   const who = quote.senderId === meId ? 'You' : otherName;
   return (
     <div className="flex items-center gap-2 px-3 pt-2">
-      <div className="flex min-w-0 flex-1 overflow-hidden rounded-md bg-white" aria-label="Replying to">
+      <div className="flex min-w-0 flex-1 overflow-hidden rounded-md bg-panel" aria-label="Replying to">
         <span className={`w-1 shrink-0 ${quote.senderId === meId ? 'bg-emerald-500' : 'bg-violet-500'}`} />
         <div className="min-w-0 flex-1 px-3 py-1.5">
           <div className={`text-xs font-medium ${quote.senderId === meId ? 'text-emerald-700' : 'text-violet-700'}`}>{who}</div>
@@ -273,7 +273,7 @@ function AttachmentPreview({ attachment, onRemove }) {
       {attachment.kind === 'image' ? (
         <img src={attachment.url} alt="Selected" className="h-24 max-w-48 rounded-md object-cover shadow" />
       ) : (
-        <div className="flex max-w-xs items-center gap-3 rounded-md bg-white p-2.5 shadow" aria-label="Selected document">
+        <div className="flex max-w-xs items-center gap-3 rounded-md bg-panel p-2.5 shadow" aria-label="Selected document">
           <FileBadge name={attachment.file.name} />
           <span className="min-w-0">
             <span className="block truncate text-sm text-slate-800">{attachment.file.name}</span>
@@ -363,7 +363,7 @@ function Composer({ conversationId, replyTo, onCancelReply, meId, otherName }) {
   }
 
   return (
-    <div className="bg-[#f0f2f5]">
+    <div className="bg-panel-2">
       {replyTo && <ReplyBar quote={quoteOf(replyTo)} meId={meId} otherName={otherName} onCancel={onCancelReply} />}
       {attachment && <AttachmentPreview attachment={attachment} onRemove={() => setAttachment(null)} />}
       {error && <p className="px-4 pt-2 text-xs text-red-600" role="alert">{error}</p>}
@@ -430,7 +430,7 @@ function Composer({ conversationId, replyTo, onCancelReply, meId, otherName }) {
             }
           }}
           placeholder={attachment ? 'Add a caption' : 'Type a message'}
-          className="max-h-36 flex-1 resize-none rounded-lg bg-white px-4 py-2.5 text-[15px] outline-none"
+          className="max-h-36 flex-1 resize-none rounded-lg bg-panel px-4 py-2.5 text-[15px] outline-none"
         />
         <button
           onClick={submit}
@@ -549,7 +549,7 @@ export default function ChatThread() {
 
   if (error) {
     return (
-      <div className="grid flex-1 place-items-center bg-[#efeae2] p-6 text-center">
+      <div className="grid flex-1 place-items-center bg-chat p-6 text-center">
         <div>
           <p className="text-slate-700">{error}</p>
           <Link to="/" className="mt-2 inline-block text-sm font-medium text-emerald-700 hover:underline">
@@ -564,7 +564,7 @@ export default function ChatThread() {
 
   return (
     <>
-      <header className="flex items-center gap-3 bg-[#f0f2f5] px-3 py-2.5">
+      <header className="flex items-center gap-3 bg-panel-2 px-3 py-2.5">
         <Link to="/" className="rounded-full p-1 text-slate-600 hover:bg-slate-200 md:hidden" aria-label="Back">
           ←
         </Link>
@@ -577,7 +577,7 @@ export default function ChatThread() {
         </div>
       </header>
 
-      <div ref={scrollRef} onScroll={onScroll} className="flex-1 overflow-y-auto bg-[#efeae2] px-3 py-3 md:px-12">
+      <div ref={scrollRef} onScroll={onScroll} className="flex-1 overflow-y-auto bg-chat px-3 py-3 md:px-12">
         {thread?.status === 'loading' && <p className="py-6 text-center text-sm text-slate-500">Loading messages…</p>}
         {thread?.status === 'error' && (
           <p className="py-6 text-center text-sm text-red-600">
@@ -589,7 +589,7 @@ export default function ChatThread() {
         )}
         {thread?.loadingOlder && <p className="py-2 text-center text-xs text-slate-500">Loading older messages…</p>}
         {thread?.status === 'ready' && !thread.hasMore && (
-          <div className="mx-auto mb-3 w-fit rounded-lg bg-[#fff5c4] px-4 py-1.5 text-center text-xs text-slate-600 shadow-sm">
+          <div className="mx-auto mb-3 w-fit rounded-lg bg-notice px-4 py-1.5 text-center text-xs text-slate-600 shadow-sm">
             This is the start of your chat with {other?.displayName ?? 'them'}.
           </div>
         )}
@@ -603,7 +603,7 @@ export default function ChatThread() {
               <Fragment key={m.clientMsgId}>
                 {newDay && (
                   <div className="sticky top-0 z-10 flex justify-center py-2">
-                    <span className="rounded-lg bg-white/95 px-3 py-1 text-xs text-slate-600 shadow-sm">
+                    <span className="rounded-lg bg-panel/95 px-3 py-1 text-xs text-slate-600 shadow-sm">
                       {formatDayLabel(m.createdAt)}
                     </span>
                   </div>
@@ -614,7 +614,7 @@ export default function ChatThread() {
                     mine={mine}
                     meId={user.id}
                     otherName={other?.displayName ?? 'Them'}
-                    highlighted={highlightId === m.id}
+                    highlighted={!!m.id && highlightId === m.id}
                     onAction={(action) => onAction(m, action)}
                     onJump={jumpTo}
                     status={mine ? tickFor(m, conversation?.receipts) : null}
@@ -630,7 +630,7 @@ export default function ChatThread() {
 
         {typing && (
           <div className="mt-2 flex justify-start" aria-label={`${other?.displayName} is typing`}>
-            <div className="flex gap-1 rounded-lg bg-white px-3 py-3 shadow-sm">
+            <div className="flex gap-1 rounded-lg bg-panel px-3 py-3 shadow-sm">
               {[0, 150, 300].map((d) => (
                 <span key={d} className="h-2 w-2 animate-bounce rounded-full bg-slate-400" style={{ animationDelay: `${d}ms` }} />
               ))}

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { API_BASE, handleUnauthorized } from './api.js';
 import { useChat } from '../store/chat.js';
@@ -7,8 +7,15 @@ import { useChat } from '../store/chat.js';
  * Opens the Socket.io connection for the logged-in user and feeds events into the store.
  * The auth cookie is sent with the handshake (withCredentials).
  */
-export function useChatConnection(user) {
+export function useChatConnection(user, onSelfUpdated) {
+  // Keep the latest callback without reconnecting when it (or the user object) changes.
+  const onSelf = useRef(onSelfUpdated);
+  onSelf.current = onSelfUpdated;
+  const userRef = useRef(user);
+  userRef.current = user;
+
   useEffect(() => {
+    const user = userRef.current;
     const store = useChat.getState;
     const socket = io(API_BASE || undefined, { withCredentials: true, autoConnect: false });
     store().attach(user, socket);
@@ -35,6 +42,10 @@ export function useChatConnection(user) {
     socket.on('typing', (p) => store().onTyping(p));
     socket.on('message:deleted', (p) => store().onDeleted(p));
     socket.on('message:hidden', (p) => store().onHidden(p));
+    socket.on('user:updated', (p) => {
+      if (p.user.id === user.id) onSelf.current?.(p.user);
+      else store().onUserUpdated(p);
+    });
 
     const onVisibility = () => document.visibilityState === 'visible' && store().onVisible();
     document.addEventListener('visibilitychange', onVisibility);
@@ -45,5 +56,5 @@ export function useChatConnection(user) {
       socket.disconnect();
       store().reset();
     };
-  }, [user]);
+  }, [user.id]); // reconnect only when a different user logs in
 }

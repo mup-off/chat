@@ -1,7 +1,7 @@
 import { test, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  startServer, resetDb, client, pool, connectSocket, emitAck, collect, sleep,
+  startServer, resetDb, client, pool, connectSocket, emitAck, collect, sleep, waitFor,
 } from './helpers.js';
 import { ensureBucket } from '../src/storage.js';
 
@@ -51,7 +51,7 @@ test('presence: contacts see online/offline; multiple tabs count as one; last se
   const carolSees = collect(carolTab, 'presence:update');
 
   const bob1 = await socketFor(bob);
-  await sleep(100);
+  await waitFor(() => aliceSees.length >= 1);
   assert.deepEqual(aliceSees.map((p) => [p.userId, p.online]), [[bob.user.id, true]]);
   assert.equal(carolSees.length, 0, 'not a contact: no presence');
 
@@ -67,7 +67,7 @@ test('presence: contacts see online/offline; multiple tabs count as one; last se
 
   // Closing the last tab: offline after the grace period, with last seen.
   bob2.close();
-  await sleep(200);
+  await waitFor(() => aliceSees.length >= 2);
   assert.equal(aliceSees.length, 2);
   assert.equal(aliceSees[1].online, false);
   assert.ok(aliceSees[1].lastSeenAt);

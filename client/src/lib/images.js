@@ -38,6 +38,21 @@ export async function compressImage(file) {
   return blob.size < file.size || scale < 1 ? blob : file;
 }
 
+/** Centre-crop to a square and resize to 512 px for a profile photo (WebP, else JPEG). */
+export async function squareAvatar(file) {
+  const bitmap = await createImageBitmap(file);
+  const side = Math.min(bitmap.width, bitmap.height);
+  const size = Math.min(512, side);
+  const canvas = Object.assign(document.createElement('canvas'), { width: size, height: size });
+  canvas
+    .getContext('2d')
+    .drawImage(bitmap, (bitmap.width - side) / 2, (bitmap.height - side) / 2, side, side, 0, 0, size, size);
+  bitmap.close?.();
+  const webp = await new Promise((r) => canvas.toBlob(r, 'image/webp', 0.85));
+  if (webp?.type === 'image/webp') return webp;
+  return new Promise((r) => canvas.toBlob(r, 'image/jpeg', 0.85));
+}
+
 // ------------------------------------------------------------- documents
 
 export const MAX_DOCUMENT_BYTES = 25 * 1024 * 1024;

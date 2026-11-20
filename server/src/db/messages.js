@@ -1,5 +1,6 @@
 import { query } from './pool.js';
 import { badRequest } from '../errors.js';
+import { avatarUrl } from './users.js';
 
 // Messages joined with: the shared contact's public details (type = 'contact') and a
 // short snapshot of the message being replied to (the quote shown above a reply).
@@ -8,6 +9,7 @@ const SELECT = `
          m.media_key, m.media_name, m.media_size, m.media_type, m.created_at,
          m.forwarded, m.deleted_at, m.reply_to_id,
          m.contact_user_id, cu.username AS contact_username, cu.display_name AS contact_display_name,
+         cu.avatar_key AS contact_avatar_key,
          rm.sender_id AS reply_sender_id, rm.type AS reply_type, left(rm.body, 200) AS reply_body,
          rm.media_name AS reply_media_name, rm.media_key AS reply_media_key, rm.deleted_at AS reply_deleted_at,
          rcu.display_name AS reply_contact_display_name
@@ -36,7 +38,12 @@ export function toMessage(row) {
     // null for a contact whose account was deleted
     contact:
       !deleted && row.contact_user_id && row.contact_username
-        ? { id: row.contact_user_id, username: row.contact_username, displayName: row.contact_display_name }
+        ? {
+            id: row.contact_user_id,
+            username: row.contact_username,
+            displayName: row.contact_display_name,
+            avatarUrl: avatarUrl(row.contact_avatar_key),
+          }
         : null,
     forwarded: Boolean(row.forwarded),
     deleted,

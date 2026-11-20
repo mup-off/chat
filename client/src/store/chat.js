@@ -502,6 +502,25 @@ export const useChat = create((set, get) => {
       }
     },
 
+    /** A contact (or I, in another tab) changed name / photo / about. */
+    onUserUpdated({ user }) {
+      const patchUser = (u) => (u && u.id === user.id ? { ...u, ...user } : u);
+      set((s) => {
+        const conversations = {};
+        for (const [id, c] of Object.entries(s.conversations)) {
+          conversations[id] = c.otherUser?.id === user.id ? { ...c, otherUser: patchUser(c.otherUser) } : c;
+        }
+        const threads = {};
+        for (const [id, t] of Object.entries(s.threads)) {
+          threads[id] = t && {
+            ...t,
+            messages: t.messages.map((m) => (m.contact?.id === user.id ? { ...m, contact: patchUser(m.contact) } : m)),
+          };
+        }
+        return { conversations, threads };
+      });
+    },
+
     // ------------------------------------------------------------- reconnect
 
     /** After a reconnect: refresh the list, fetch missed messages, resend unsent ones. */

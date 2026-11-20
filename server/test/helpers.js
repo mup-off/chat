@@ -28,6 +28,15 @@ export function collect(socket, event) {
 }
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** Polls until check() is truthy (or fails after timeoutMs). Better than fixed sleeps on slow machines. */
+export async function waitFor(check, timeoutMs = 3000) {
+  const end = Date.now() + timeoutMs;
+  while (!check()) {
+    if (Date.now() > end) throw new Error('waitFor: condition not met in time');
+    await sleep(20);
+  }
+}
 import { pool } from '../src/db/pool.js';
 
 export async function startServer() {

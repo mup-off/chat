@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { API_BASE } from '../lib/api.js';
+
 const COLORS = [
   'bg-emerald-600', 'bg-sky-600', 'bg-violet-600', 'bg-rose-600',
   'bg-amber-600', 'bg-teal-600', 'bg-indigo-600', 'bg-fuchsia-600',
@@ -18,19 +21,39 @@ function initials(name = '?') {
     .join('');
 }
 
+const SIZES = {
+  sm: 'h-9 w-9 text-sm',
+  md: 'h-10 w-10 text-sm',
+  lg: 'h-12 w-12 text-base',
+  xl: 'h-36 w-36 text-4xl',
+};
+
+/** Profile photo if the user has one, otherwise coloured initials. */
 export default function Avatar({ user, size = 'md', online = false }) {
-  const sizes = { sm: 'h-9 w-9 text-sm', md: 'h-10 w-10 text-sm', lg: 'h-12 w-12 text-base' };
+  const [failed, setFailed] = useState(null);
+  const src = user?.avatarUrl && failed !== user.avatarUrl ? API_BASE + user.avatarUrl : null;
+
   return (
     <div className="relative shrink-0">
-      <div
-        className={`${sizes[size]} ${colorFor(user?.id)} rounded-full grid place-items-center font-semibold text-white`}
-        aria-hidden="true"
-      >
-        {initials(user?.displayName)}
-      </div>
+      {src ? (
+        <img
+          src={src}
+          alt=""
+          data-avatar
+          onError={() => setFailed(user.avatarUrl)}
+          className={`${SIZES[size]} rounded-full bg-slate-200 object-cover`}
+        />
+      ) : (
+        <div
+          className={`${SIZES[size]} ${colorFor(user?.id)} grid place-items-center rounded-full font-semibold text-white`}
+          aria-hidden="true"
+        >
+          {initials(user?.displayName)}
+        </div>
+      )}
       {online && (
         <span
-          className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-emerald-500"
+          className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-panel bg-emerald-500"
           aria-label="Online"
         />
       )}

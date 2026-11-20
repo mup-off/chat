@@ -7,14 +7,14 @@ import ChatThread from './pages/ChatThread.jsx';
 function RequireAuth({ children }) {
   const { user } = useAuth();
   if (user === undefined) {
-    return <div className="grid h-dvh place-items-center bg-[#eae6df] text-slate-500">Loading…</div>;
+    return <div className="grid h-dvh place-items-center bg-app text-slate-500">Loading…</div>;
   }
   return user ? children : <Navigate to="/login" replace />;
 }
 
 function EmptyPanel() {
   return (
-    <div className="grid flex-1 place-items-center bg-[#f0f2f5] p-6 text-center">
+    <div className="grid flex-1 place-items-center bg-panel-2 p-6 text-center">
       <div>
         <div className="text-4xl">💬</div>
         <p className="mt-3 text-slate-600">Select a chat or start a new one.</p>

@@ -23,7 +23,7 @@ export default function NewChatPanel({ onClose, onOpen }) {
   }
 
   return (
-    <div className="flex h-full flex-col bg-white">
+    <div className="flex h-full flex-col bg-panel">
       <div className="flex items-center gap-4 bg-emerald-700 px-4 pb-3 pt-4 text-white">
         <button onClick={onClose} aria-label="Back" className="rounded-full p-1 hover:bg-white/10">
           ←
@@ -63,7 +63,7 @@ export default function NewChatPanel({ onClose, onOpen }) {
                 <Avatar user={u} />
                 <div className="min-w-0 flex-1 border-b border-slate-100 pb-3">
                   <div className="truncate font-medium text-slate-800">{u.displayName}</div>
-                  <div className="truncate text-sm text-slate-500">@{u.username}</div>
+                  <div className="truncate text-sm text-slate-500">{u.about || `@${u.username}`}</div>
                 </div>
                 {openingId === u.id && <span className="text-xs text-slate-500">Opening…</span>}
               </button>

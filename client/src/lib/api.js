@@ -43,4 +43,5 @@ async function request(method, path, body, { signal } = {}) {
 export const api = {
   get: (path, opts) => request('GET', path, undefined, opts),
   post: (path, body, opts) => request('POST', path, body, opts),
+  patch: (path, body, opts) => request('PATCH', path, body, opts),
 };

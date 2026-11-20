@@ -9,6 +9,7 @@ import { authRouter } from './routes/auth.js';
 import { usersRouter } from './routes/users.js';
 import { conversationsRouter } from './routes/conversations.js';
 import { mediaRouter } from './routes/media.js';
+import { profileRouter } from './routes/profile.js';
 import { requireAuth } from './middleware/requireAuth.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { registerSockets } from './sockets/index.js';
@@ -36,6 +37,7 @@ export function createServer() {
   app.use('/api/users', requireAuth, usersRouter);
   app.use('/api/conversations', requireAuth, conversationsRouter);
   app.use(mediaRouter); // /api/uploads, /api/media/...
+  app.use(profileRouter); // /api/me, /api/me/avatar-upload, /api/avatars/...
 
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
   app.use(errorHandler);
@@ -46,6 +48,7 @@ export function createServer() {
     maxHttpBufferSize: 64 * 1024,
   });
   registerSockets(io);
+  app.set('io', io); // lets REST routes push socket events (e.g. profile updates)
 
   return { app, server, io };
 }

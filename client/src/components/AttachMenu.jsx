@@ -51,7 +51,7 @@ export default function AttachMenu({ onSelect, onClose }) {
       ref={ref}
       role="menu"
       aria-label="Attach"
-      className="absolute bottom-full left-0 z-20 mb-2 w-56 overflow-hidden rounded-2xl bg-white py-2 shadow-xl ring-1 ring-black/5"
+      className="absolute bottom-full left-0 z-20 mb-2 w-56 overflow-hidden rounded-2xl bg-panel py-2 shadow-xl ring-1 ring-black/5"
     >
       {OPTIONS.map(({ id, label, Icon, color }) => (
         <button

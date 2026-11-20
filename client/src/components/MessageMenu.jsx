@@ -21,7 +21,7 @@ export default function MessageMenu({ align, items, onClose }) {
       ref={ref}
       role="menu"
       aria-label="Message options"
-      className={`absolute top-7 z-30 w-44 overflow-hidden rounded-xl bg-white py-1.5 shadow-xl ring-1 ring-black/5 ${
+      className={`absolute top-7 z-30 w-44 overflow-hidden rounded-xl bg-panel py-1.5 shadow-xl ring-1 ring-black/5 ${
         align === 'right' ? 'right-1' : 'left-1'
       }`}
     >

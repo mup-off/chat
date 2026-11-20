@@ -14,6 +14,8 @@ export const config = {
   isProd,
   // Max failed auth attempts per IP per 15 minutes.
   authRateLimit: Number(process.env.AUTH_RATE_LIMIT ?? 10),
+  // Password hashing strength. 12 in production; tests lower it (each hash at 12 takes ~1 s).
+  bcryptCost: Number(process.env.BCRYPT_COST ?? 12),
   // Behind one proxy hop in production (Railway/Render/Fly); Vite proxy on loopback in dev.
   trustProxy: isProd ? 1 : 'loopback',
   // How long a user stays "online" after their last tab disconnects (covers page reloads).

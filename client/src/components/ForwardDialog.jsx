@@ -55,7 +55,7 @@ export default function ForwardDialog({ quote, onForward, onClose }) {
         role="dialog"
         aria-label="Forward message"
         onMouseDown={(e) => e.stopPropagation()}
-        className="flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
+        className="flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-panel shadow-xl"
       >
         <div className="flex items-center gap-3 bg-emerald-700 px-4 py-3 text-white">
           <h2 className="flex-1 text-lg font-medium">Forward message to</h2>

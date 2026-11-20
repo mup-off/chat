@@ -2,6 +2,7 @@ import { query } from './pool.js';
 import { notFound } from '../errors.js';
 import { getMessagesByIds } from './messages.js';
 import { isOnline } from '../presence.js';
+import { avatarUrl } from './users.js';
 
 /**
  * Throws 404 unless userId is a participant of conversationId.
@@ -42,6 +43,7 @@ const SUMMARY_SQL = `
   SELECT c.id, c.type, c.created_at, c.last_message_at,
          u.id AS other_id, u.username AS other_username,
          u.display_name AS other_display_name, u.last_seen_at AS other_last_seen_at,
+         u.about AS other_about, u.avatar_key AS other_avatar_key,
          op.last_delivered_at AS other_last_delivered_at, op.last_read_at AS other_last_read_at,
          lm.id AS last_message_id,
          (SELECT count(*)::int FROM messages x
@@ -76,6 +78,8 @@ async function toSummaries(rows) {
           id: row.other_id,
           username: row.other_username,
           displayName: row.other_display_name,
+          about: row.other_about,
+          avatarUrl: avatarUrl(row.other_avatar_key),
           lastSeenAt: row.other_last_seen_at,
           online: isOnline(row.other_id),
         }

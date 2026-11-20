@@ -49,7 +49,7 @@ export default function AuthPage({ mode }) {
   }
 
   return (
-    <main className="min-h-dvh bg-[#eae6df] grid place-items-center px-4 py-10">
+    <main className="min-h-dvh bg-app grid place-items-center px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
           <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-emerald-600 text-2xl text-white">
@@ -60,7 +60,7 @@ export default function AuthPage({ mode }) {
           </h1>
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-4 rounded-2xl bg-white p-6 shadow-sm">
+        <form onSubmit={onSubmit} className="space-y-4 rounded-2xl bg-panel p-6 shadow-sm">
           <Field
             label="Username"
             autoComplete="username"

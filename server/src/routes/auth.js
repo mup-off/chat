@@ -6,11 +6,11 @@ import { query } from '../db/pool.js';
 import { toPublicUser, USER_COLUMNS } from '../db/users.js';
 import { config } from '../config.js';
 import { parse, schemas } from '../validate.js';
-import { conflict, unauthorized } from '../errors.js';
+import { badRequest, conflict, unauthorized } from '../errors.js';
 import { COOKIE_NAME, signToken, cookieOptions, clearCookieOptions } from '../auth/tokens.js';
 import { requireAuth } from '../middleware/requireAuth.js';
 
-const BCRYPT_COST = 12;
+const BCRYPT_COST = config.bcryptCost;
 // Compared against when the username doesn't exist, so response time doesn't reveal it.
 const DUMMY_HASH = bcrypt.hashSync('timing-equalizer', BCRYPT_COST);
 
@@ -61,7 +61,7 @@ authRouter.post('/register', authLimiter, async (req, res) => {
   }
 
   res.cookie(COOKIE_NAME, signToken(row.id), cookieOptions);
-  res.status(201).json({ user: toPublicUser(row, { includePhone: true }) });
+  res.status(201).json({ user: toPublicUser(row, { includePrivate: true }) });
 });
 
 authRouter.post('/login', authLimiter, async (req, res) => {
@@ -75,11 +75,31 @@ authRouter.post('/login', authLimiter, async (req, res) => {
   if (!row || !ok) throw unauthorized('Invalid username or password');
 
   res.cookie(COOKIE_NAME, signToken(row.id), cookieOptions);
-  res.json({ user: toPublicUser(row, { includePhone: true }) });
+  res.json({ user: toPublicUser(row, { includePrivate: true }) });
 });
 
 authRouter.post('/logout', (_req, res) => {
   res.clearCookie(COOKIE_NAME, clearCookieOptions);
+  res.status(204).end();
+});
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1, 'Enter your current password').max(72),
+  newPassword: schemas.password,
+});
+
+// POST /api/auth/password { currentPassword, newPassword }
+authRouter.post('/password', authLimiter, requireAuth, async (req, res) => {
+  const { currentPassword, newPassword } = parse(passwordSchema, req.body);
+  const { rows: [row] } = await query('SELECT password_hash FROM users WHERE id = $1', [req.userId]);
+  if (!row || !(await bcrypt.compare(currentPassword, row.password_hash))) {
+    throw unauthorized('Current password is incorrect');
+  }
+  if (currentPassword === newPassword) throw badRequest('New password must be different');
+  await query('UPDATE users SET password_hash = $2 WHERE id = $1', [
+    req.userId,
+    await bcrypt.hash(newPassword, BCRYPT_COST),
+  ]);
   res.status(204).end();
 });
 
@@ -90,5 +110,5 @@ authRouter.get('/me', requireAuth, async (req, res) => {
     res.clearCookie(COOKIE_NAME, clearCookieOptions);
     throw unauthorized();
   }
-  res.json({ user: toPublicUser(row, { includePhone: true }) });
+  res.json({ user: toPublicUser(row, { includePrivate: true }) });
 });

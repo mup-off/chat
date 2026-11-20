@@ -122,7 +122,7 @@ test('contacts: share a user card; no phone number exposed; unknown users refuse
   const ack = await send(socket, convId, { type: 'contact', contactUserId: carol.user.id });
   assert.equal(ack.ok, true, ack.error);
   assert.equal(ack.message.type, 'contact');
-  assert.deepEqual(ack.message.contact, { id: carol.user.id, username: 'carol', displayName: 'carol' });
+  assert.deepEqual(ack.message.contact, { id: carol.user.id, username: 'carol', displayName: 'carol', avatarUrl: null });
 
   const history = (await bob.c.req('GET', `/api/conversations/${convId}/messages`)).body.messages;
   assert.deepEqual(history[0].contact, ack.message.contact);

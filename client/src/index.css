@@ -1,1 +1,48 @@
 @import "tailwindcss";
+
+/*
+ * App colour tokens. Components use bg-panel, bg-chat, bg-bubble-out, … and Tailwind's
+ * slate scale; dark mode (class="dark" on <html>) just swaps the variable values below.
+ */
+@theme {
+  --color-app: #eae6df;          /* page background around the app */
+  --color-panel: #ffffff;        /* sidebar, cards, incoming bubbles */
+  --color-panel-2: #f0f2f5;      /* headers, composer bar */
+  --color-chat: #efeae2;         /* chat wallpaper (overridden by the wallpaper setting) */
+  --color-bubble-out: #d9fdd3;   /* my messages */
+  --color-bubble-out-2: #c8f0c0; /* quotes / file cards inside my messages */
+  --color-notice: #fff5c4;       /* "start of chat" note */
+}
+
+.dark {
+  color-scheme: dark;
+  --color-app: #0c1317;
+  --color-panel: #111b21;
+  --color-panel-2: #202c33;
+  --color-chat: #0b141a;
+  --color-bubble-out: #005c4b;
+  --color-bubble-out-2: #025144;
+  --color-notice: #1f2c33;
+
+  /* Slate scale flipped: light text on dark surfaces. */
+  --color-slate-50: #182229;
+  --color-slate-100: #202c33;
+  --color-slate-200: #2a3942;
+  --color-slate-300: #3b4a54;
+  --color-slate-400: #8696a0;
+  --color-slate-500: #8696a0;
+  --color-slate-600: #aebac1;
+  --color-slate-700: #d1d7db;
+  --color-slate-800: #e9edef;
+
+  /* Accent text that would be too dark on dark surfaces. */
+  --color-emerald-700: #00a884;
+  --color-violet-700: #a78bfa;
+  --color-red-700: #fca5a5;
+  --color-amber-800: #fcd34d;
+
+  /* Tinted alert backgrounds. */
+  --color-red-50: #3b1d1d;
+  --color-amber-50: #3a2f12;
+  --color-amber-100: #4a3b10;
+}
