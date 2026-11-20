@@ -40,11 +40,7 @@ export default function NewChatPanel({ onClose, onOpen }) {
           onKeyDown={(e) => e.key === 'Escape' && onClose()}
           placeholder="Search name, username or phone number"
           className="w-full rounded-lg bg-slate-100 px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-600/30"
-        />
-        <p className="mt-2 px-1 text-xs text-slate-500">
-          Type at least 2 letters or digits. Numbers work with or without +250, e.g. 0780 or +25078.
-        </p>
-      </div>
+        />      </div>
 
       <div className="flex-1 overflow-y-auto">
         {status === 'loading' && <p className="px-4 py-3 text-sm text-slate-500">Searching…</p>}
