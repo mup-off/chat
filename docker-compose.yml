@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: chat
+      POSTGRES_PASSWORD: chat
+      POSTGRES_DB: chat
+    ports:
+      - "5433:5432"
+    volumes:
+      - chat_pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chat -d chat"]
+      interval: 2s
+      retries: 15
+
+  # Browser DB viewer: http://localhost:8080 (dev only)
+  adminer:
+    image: adminer:5
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      - db
+
+  # S3-compatible object storage for images (dev stand-in for S3 / Cloudflare R2).
+  # API: http://localhost:9000  Console: http://localhost:9001 (chatdev / chatdev-secret)
+  storage:
+    image: rustfs/rustfs:1.0.6
+    environment:
+      RUSTFS_ACCESS_KEY: chatdev
+      RUSTFS_SECRET_KEY: chatdev-secret
+      RUSTFS_CONSOLE_ENABLE: "true"
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - chat_storage:/data
+
+volumes:
+  chat_pgdata:
+  chat_storage:

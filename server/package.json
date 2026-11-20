@@ -1,0 +1,35 @@
+{
+  "name": "server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --env-file-if-exists=.env src/index.js",
+    "start": "node src/index.js",
+    "migrate": "node --env-file-if-exists=.env ../node_modules/node-pg-migrate/bin/node-pg-migrate.js up -m migrations --migration-file-language sql",
+    "migrate:create": "node --env-file-if-exists=.env ../node_modules/node-pg-migrate/bin/node-pg-migrate.js create -m migrations --migration-file-language sql",
+    "seed": "node --env-file-if-exists=.env scripts/seed.js",
+    "db:check": "node --env-file-if-exists=.env scripts/check-db.js",
+    "migrate:down": "node --env-file-if-exists=.env ../node_modules/node-pg-migrate/bin/node-pg-migrate.js down -m migrations --migration-file-language sql",
+    "test:db": "node --env-file-if-exists=.env scripts/setup-test-db.js",
+    "test": "node --env-file-if-exists=.env --import ./test/setup.js --test --test-concurrency=1 \"test/**/*.test.js\"",
+    "storage:setup": "node --env-file-if-exists=.env scripts/setup-storage.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1173.0",
+    "@aws-sdk/s3-request-presigner": "^3.1173.0",
+    "bcryptjs": "^3.0.3",
+    "cookie": "^2.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.5",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.1",
+    "socket.io": "^4.8.4",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "node-pg-migrate": "^9.0.0",
+    "socket.io-client": "^4.8.4"
+  }
+}
